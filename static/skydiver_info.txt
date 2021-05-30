@@ -1,0 +1,6 @@
+Name:						Kyle Hurd
+Parachute Brand:			Precision
+Parachute Model:			Fusion
+Parachute Size [sq. ft.]: 	135
+Current Dropzone:			Skydive Kapowsin
+Primary Aircraft:			Caravan
