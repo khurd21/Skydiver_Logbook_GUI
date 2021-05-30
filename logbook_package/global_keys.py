@@ -7,6 +7,7 @@ _kGET_PARACHUTE_MODEL_SIZE_INPUT = '-EQUIPMENT-'
 _kGET_DATE_OF_JUMP_INPUT = '-DATE-'
 _kGET_NAME_INPUT = '-NAME-'
 _kGET_JUMP_NUMBER = '-JUMP_NO-'
+_kGET_SIGNATURE_INPUT = '-SIGNATURE-'
 _kGET_DESCRIPTION_OF_JUMP = '-JUMP_DESCRIPTION-'
 
 # _b = Buttons
@@ -15,3 +16,16 @@ _bLAUNCH_LOG_JUMP_WINDOW = 'Log A Jump'
 _bLOG_JUMP = 'Log'
 _bVIEW_LOGBOOK = 'View LogBook'
 _bQUIT = 'Quit'
+
+# _f = Files
+
+_fSKYDIVER_INFO_TXT = 'static/skydiver_info.txt'
+
+# _d = Dictionary Keys
+
+_dNAME = 'Name'
+_dPARACHUTE_BRAND = 'Parachute Brand'
+_dPARACHUTE_MODEL = 'Parachute Model'
+_dPARACHUTE_SIZE = 'Parachute Size [sq. ft.]'
+_dCURRENT_DROPZONE = 'Current Dropzone'
+_dPRIMARY_AIRCRAFT = 'Primary Aircraft'

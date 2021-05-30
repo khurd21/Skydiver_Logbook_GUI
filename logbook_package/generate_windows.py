@@ -55,8 +55,10 @@ def generate_log_a_jump_window(skydiver_default_info: list[str]) -> sg.Window(''
 
                 [sg.Text('Equipment:', size=(20,1)), sg.Input(default_text=skydiver_default_info[2],
                    key=gk._kGET_PARACHUTE_MODEL_SIZE_INPUT)],
+
+                [sg.Text('Signature:', size=(20,1)), sg.Input(key=gk._kGET_SIGNATURE_INPUT)],
                 
-                [sg.Text('Description:', size=(20,1)), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)]
+                [sg.Text('Description:', size=(20,1)), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)],
 
                 [sg.Column(log_button_to_be_centered, justification='c', element_justification='center')]
             ]

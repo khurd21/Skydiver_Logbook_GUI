@@ -33,10 +33,16 @@ while True:
 window.close()
 '''
 
+# Grab the last jump no. logged in the csv, file, this will be the total amount of jumps. Use this to
+# track the total num of jumps
+
+# If the csv is empty, let them log the next jump num and start there
+
+default_skydiver_info: dict = specs.parse_skydiver_info_file(gk._fSKYDIVER_INFO_TXT)
+
 main_menu_window, log_a_jump_window = gen_win.generate_primary_window(), None
-#REMOVE ME LATER
-name = 'Kyle Hurd'
-main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {name}')
+main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info[gk._dNAME]}')
+
 
 while True:
     window, event, values = sg.read_all_windows()
@@ -48,17 +54,23 @@ while True:
         elif window == main_menu_window:
             break
 
-    elif event == gk._bLAUNCH_LOG_JUMP_WINDOW and not log_a_jump_window: 
-        # DELETE ME WHEN FUNCTIONALTY ADDED
-        arr = ['Skydive Kapowsin', 'Caravan', 'Fusion 135']
+    elif event == gk._bLAUNCH_LOG_JUMP_WINDOW and not log_a_jump_window:
+
+        arr = [
+                default_skydiver_info[gk._dCURRENT_DROPZONE],
+                default_skydiver_info[gk._dPRIMARY_AIRCRAFT],
+                default_skydiver_info[gk._dPARACHUTE_MODEL] + ' ' + default_skydiver_info[gk._dPARACHUTE_SIZE]
+            ]
         log_a_jump_window = gen_win.generate_log_a_jump_window(arr)
 
     elif event == gk._bVIEW_LOGBOOK:
         pass
 
     elif event == gk._bLOG_JUMP:
+
         logged_jump = specs.Logged_Jump()
         logged_jump.fill_logged_jump_from_dict(values)
+
         if logged_jump.verify_logged_jump():
             # NEED TO ADD DICT OR DATA STRUCT TO ADD A JUMP
             # DONT FORGET TO INCREMENT TOTAL_JUMPS

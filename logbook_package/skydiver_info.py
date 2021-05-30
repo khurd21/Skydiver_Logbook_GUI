@@ -76,6 +76,7 @@ class Logged_Jump:
                 )
 
     def fill_logged_jump_from_dict(self, values: dict) -> None:
+
         self.aircraft = values[gk._kGET_AIRCRAFT_INPUT]
         self.date = values[gk._kGET_DATE_OF_JUMP_INPUT]
         self.description = values[gk._kGET_DESCRIPTION_OF_JUMP]
@@ -83,4 +84,22 @@ class Logged_Jump:
         self.exit_altitude = values[gk._kGET_EXIT_ALTITUDE_INPUT]
         self.jump_number = values[gk._kGET_JUMP_NUMBER]
         self.location = values[gk._kGET_DROP_ZONE_LOCATION_INPUT]
+
         return None
+
+
+
+
+
+def parse_skydiver_info_file(filename: str) -> dict:
+        
+    skydiver_info: dict = {}
+
+    with open(filename, 'r') as f_:
+        for line in f_:
+            logged_info = line.split(':', 1)
+            logged_info[0] = logged_info[0].strip()
+            logged_info[1] = logged_info[1].strip()
+            skydiver_info[logged_info[0]] = logged_info[1]
+
+    return skydiver_info
