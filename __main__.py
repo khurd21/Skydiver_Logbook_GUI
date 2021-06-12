@@ -1,47 +1,47 @@
 import PySimpleGUI as sg
-from logbook_package import gen_win, gk, specs
-
-
-'''
-layout = [  [sg.Text("What's your name?'")],
-            [sg.Input(key='-INPUT-')],
-            [sg.Text('What is your favorite animal?')],
-            [sg.Input(key='-INPUT2-')],
-            [sg.Text(size=(40,1), key='-OUTPUT-')],
-            [sg.Button('Ok'), sg.Button('New Window'), sg.Button('Quit')]
-        ]
-
-window = sg.Window('Testing PySimpleGUI', layout)
-
-while True:
-    event, values = window.read()
-
-    if event == sg.WINDOW_CLOSED or event == 'Quit':
-        break
-    elif event == 'Ok':
-        if values['-INPUT2-'] == '' or values['-INPUT-'] == '':
-            window['-OUTPUT-'].update('Please enter all fields.', text_color='red')
-        else:
-            window['-OUTPUT-'].update(f'Hello to {values["-INPUT-"]}! Your favorite animal is a {values["-INPUT2-"].lower()}',
-                    text_color='white')
-    elif event == 'New Window':
-        window['-OUTPUT-'].update(f'Hmmm.....')
-        new_layout = [  [sg.Text('Well this is awkward')]   ]
-        new_window = sg.Window('New Window babyy!!!!', new_layout)
-        new_event, new_values = new_window.read()
-
-window.close()
-'''
+from logbook_package import gen_win, gk, specs, parser
 
 # Grab the last jump no. logged in the csv, file, this will be the total amount of jumps. Use this to
 # track the total num of jumps
 
 # If the csv is empty, let them log the next jump num and start there
+sg.theme('Purple')
+default_skydiver_info: specs.Skydiver_Personal_Info = parser.parse_skydiver_info_file(gk._fSKYDIVER_INFO_TXT)
+logbook: list[specs.Logged_Jump] = parser.parse_logbook_csv(gk._fLOGBOOK_CSV)
 
-default_skydiver_info: dict = specs.parse_skydiver_info_file(gk._fSKYDIVER_INFO_TXT)
+if len(logbook) == 0:
+    # MAKE A FUNCTION INSIDE GENERATE_WINDOWS TO CREATE A WINDOW AND 
+    # TO GENERATE A WINDOW TO LOG THE FIRST JUMP
+    create_new_logbook_window = gen_win.generate_create_new_logbook_window(
+            [
+                    default_skydiver_info.current_dropzone,
+                    default_skydiver_info.primary_aircraft,
+                    default_skydiver_info.parachute_model + ' ' + default_skydiver_info.parachute_size
+                    ]
+                )
+
+    logged_jump = specs.Logged_Jump()
+
+    while True:
+        event, values = create_new_logbook_window.read()
+        
+        if event == sg.WINDOW_CLOSED or event == gk._bQUIT:
+            create_new_logbook_window.close()
+            exit()
+
+        elif event == gk._bLOG_JUMP:
+            logged_jump.fill_logged_jump_from_dict(values)
+            if logged_jump.verify_logged_jump():
+                logbook.insert(0, logged_jump)
+                break
+            else:
+                create_new_logbook_window.Element('-UPDATE_TEXT-').update('Please enter information into ALL fields.', background_color='red')
+
+
+# NEXT BLOCK
 
 main_menu_window, log_a_jump_window = gen_win.generate_primary_window(), None
-main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info[gk._dNAME]}')
+main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info.name}')
 
 
 while True:
@@ -57,11 +57,12 @@ while True:
     elif event == gk._bLAUNCH_LOG_JUMP_WINDOW and not log_a_jump_window:
 
         arr = [
-                default_skydiver_info[gk._dCURRENT_DROPZONE],
-                default_skydiver_info[gk._dPRIMARY_AIRCRAFT],
-                default_skydiver_info[gk._dPARACHUTE_MODEL] + ' ' + default_skydiver_info[gk._dPARACHUTE_SIZE]
+                default_skydiver_info.current_dropzone,
+                default_skydiver_info.primary_aircraft,
+                default_skydiver_info.parachute_model + ' ' + default_skydiver_info.parachute_size
             ]
         log_a_jump_window = gen_win.generate_log_a_jump_window(arr)
+        log_a_jump_window[gk._kUPDATE_JUMP_NUMBER].update(f'Jump #: {len(logbook) + 1}')
 
     elif event == gk._bVIEW_LOGBOOK:
         pass
@@ -72,9 +73,5 @@ while True:
         logged_jump.fill_logged_jump_from_dict(values)
 
         if logged_jump.verify_logged_jump():
-            # NEED TO ADD DICT OR DATA STRUCT TO ADD A JUMP
-            # DONT FORGET TO INCREMENT TOTAL_JUMPS
-            # ALSO MAYBE CHECK TOTAL_JUMPS VS THE JUMP# OF NEW JUMP??
+            logbook.insert(0, logged_jump)
             pass
-
-
