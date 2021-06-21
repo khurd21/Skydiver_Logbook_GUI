@@ -60,3 +60,47 @@ def parse_logbook_csv(filename: str) -> list[specs.Logged_Jump]:
     logbook.pop(0) # Remove the titles/first line
 
     return logbook
+
+
+def save_logbook(logbook: list[specs.Logged_Jump]) -> None:
+    '''
+    Rewrites logbook csv to contain all contents of the logbook passed in.
+
+    :param logbook list[specs.Logged_Jump]: The list of jumps to overwrite the logbook csv file
+    :rtype None:
+    '''
+
+    with open(gk._fLOGBOOK_CSV, 'w') as f:
+        print('Jump No.,Date,Exit Altitude,Location,Aircraft,Equipment,Signature,Description', file=f)
+        for jump in logbook:
+            print(f'{jump.jump_number},{jump.date},{jump.exit_altitude},{jump.location},' \
+                    f'{jump.aircraft},{jump.equipment},{jump.signature},{jump.description}', file=f)
+
+    return None
+
+
+def space(offset: int) -> str:
+    '''
+    Creates a string of 'offset' number of spaces.
+
+    :param offset int: The number of spaces to be in the string
+    :rtype str: 'offset' number of spaces
+    '''
+    return ' ' * offset
+
+
+def parse_logbook_to_string(logbook: list[specs.Logged_Jump]) -> list[str]:
+    '''
+    Converts list of Logged_Jump() to list of str for ease of display in a GUI.
+
+    :param logbook list[specs.Logged_Jump]: The list of all logged jumps to be displayed
+    :rtype list[str]: Converted list of all logged jumps to be displayed
+    '''
+
+    return ([
+            f'{logbook[i].jump_number[0:12]:<13s}{logbook[i].date[0:14]:<15s}' \
+                    f'{logbook[i].location[0:19]:<20s}{logbook[i].aircraft[0:19]:<20s}' \
+                    f'{logbook[i].exit_altitude[0:14]:<15s}' \
+                    f'{logbook[i].equipment[0:19]:<20s}{logbook[i].signature[0:19]:<20s}' \
+                    f'{logbook[i].description[0:75]:<25s}' for i in range(len(logbook))
+                    ])

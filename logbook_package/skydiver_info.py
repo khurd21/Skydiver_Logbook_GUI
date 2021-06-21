@@ -28,7 +28,7 @@ class Logged_Jump:
         self.equipment: str = ''
         self.signature: str = ''
         self.description: str = ''
-        self.jump_number: int = 0
+        self.jump_number: str = ''
         return
 
 
@@ -73,12 +73,17 @@ class Logged_Jump:
     def _verify_equipment(self) -> bool:
         return self.equipment != ''
 
+
     def _verify_signature(self) -> bool:
         return self.signature != ''
 
 
     def _verify_description(self) -> bool:
         return self.description != ''
+
+
+    def _verify_jump_number(self) -> bool:
+        return self.jump_number.isdigit() and self.jump_number != ''
 
 
     def verify_logged_jump(self) -> bool:
@@ -98,13 +103,20 @@ class Logged_Jump:
 
 
     def fill_logged_jump_from_dict(self, values: dict) -> None:
+        '''
+        Grabs values from dictionary pulled from the GUI to assign to class variables.
 
-        self.aircraft = values[gk._kGET_AIRCRAFT_INPUT].strip()
-        self.date = values[gk._kGET_DATE_OF_JUMP_INPUT].strip()
-        self.description = values[gk._kGET_DESCRIPTION_OF_JUMP].strip()
-        self.equipment = values[gk._kGET_PARACHUTE_MODEL_SIZE_INPUT].strip()
-        self.exit_altitude = values[gk._kGET_EXIT_ALTITUDE_INPUT].strip()
-        self.jump_number = 0
-        self.location = values[gk._kGET_DROP_ZONE_LOCATION_INPUT].strip()
+        :param values dict: The values collected from GUI
+        :rtype None: 
+        '''
+
+        self.aircraft = str(values[gk._kGET_AIRCRAFT_INPUT].strip())
+        self.date = str(values[gk._kGET_DATE_OF_JUMP_INPUT].strip())
+        self.description = str(values[gk._kGET_DESCRIPTION_OF_JUMP].strip())
+        self.signature = str(values[gk._kGET_SIGNATURE_INPUT].strip())
+        self.equipment = str(values[gk._kGET_PARACHUTE_MODEL_SIZE_INPUT].strip())
+        self.exit_altitude = str(str(values[gk._kGET_EXIT_ALTITUDE_INPUT].strip()))
+        self.jump_number = str(values[gk._kGET_JUMP_NUMBER])
+        self.location = str(values[gk._kGET_DROP_ZONE_LOCATION_INPUT].strip())
 
         return None

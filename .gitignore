@@ -1,3 +1,5 @@
 **/.DS_Store/
 /venv/
 **/__pycache__/
+/static/logbook.csv
+/todo.txt
