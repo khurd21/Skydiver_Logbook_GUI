@@ -73,7 +73,7 @@ def save_logbook(logbook: list[specs.Logged_Jump], outfile: str) -> None:
     '''
 
     with open(outfile, 'w') as f_:
-        print('Jump No.,Date,Exit Altitude,Location,Aircraft,Equipment,Signature,Description', file=f)
+        print('Jump No.,Date,Exit Altitude,Location,Aircraft,Equipment,Signature,Description', file=f_)
         for jump in logbook:
             print(f'{jump.jump_number},{jump.date},{jump.exit_altitude},{jump.location},' \
                     f'{jump.aircraft},{jump.equipment},{jump.signature},{jump.description}', file=f_)
