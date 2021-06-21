@@ -10,4 +10,4 @@ if len(logbook) == 0:
     gen_win.create_new_logbook(default_skydiver_info, logbook)
 
 gen_win.create_home_page(default_skydiver_info, logbook)
-parser.save_logbook(logbook)
+parser.save_logbook(logbook, gk._fLOGBOOK_CSV)

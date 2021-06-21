@@ -57,12 +57,14 @@ def parse_logbook_csv(filename: str) -> list[specs.Logged_Jump]:
             temp.description = row[7]
             logbook.append(temp)
 
-    logbook.pop(0) # Remove the titles/first line
+
+    if len(logbook) != 0:
+        logbook.pop(0) # Remove the titles/first line
 
     return logbook
 
 
-def save_logbook(logbook: list[specs.Logged_Jump]) -> None:
+def save_logbook(logbook: list[specs.Logged_Jump], outfile: str) -> None:
     '''
     Rewrites logbook csv to contain all contents of the logbook passed in.
 
@@ -70,11 +72,11 @@ def save_logbook(logbook: list[specs.Logged_Jump]) -> None:
     :rtype None:
     '''
 
-    with open(gk._fLOGBOOK_CSV, 'w') as f:
+    with open(outfile, 'w') as f_:
         print('Jump No.,Date,Exit Altitude,Location,Aircraft,Equipment,Signature,Description', file=f)
         for jump in logbook:
             print(f'{jump.jump_number},{jump.date},{jump.exit_altitude},{jump.location},' \
-                    f'{jump.aircraft},{jump.equipment},{jump.signature},{jump.description}', file=f)
+                    f'{jump.aircraft},{jump.equipment},{jump.signature},{jump.description}', file=f_)
 
     return None
 

@@ -235,7 +235,7 @@ def create_home_page(
             if logged_jump.verify_logged_jump():
 
                 logbook.insert(len(logbook), logged_jump)
-                parser.save_logbook(logbook)
+                parser.save_logbook(logbook, gk._fLOGBOOK_CSV)
 
                 if view_log_book_window != None:
                     view_log_book_window[gk._kUPDATE_VIEW_LOG_BOOK_LIST].update(parser.parse_logbook_to_string(logbook))
