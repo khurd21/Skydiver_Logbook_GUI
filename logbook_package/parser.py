@@ -91,7 +91,7 @@ def space(offset: int) -> str:
     return ' ' * offset
 
 
-def parse_logbook_to_string(logbook: list[specs.Logged_Jump]) -> list[str]:
+def parse_logbook_to_list(logbook: list[specs.Logged_Jump]) -> list[str]:
     '''
     Converts list of Logged_Jump() to list of str for ease of display in a GUI.
 
