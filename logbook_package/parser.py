@@ -1,6 +1,7 @@
 import logbook_package.global_keys as gk
 import logbook_package.skydiver_info as specs
 import csv
+import os
 
 def parse_skydiver_info_file(filename: str) -> specs.Skydiver_Personal_Info:
     '''
@@ -40,22 +41,26 @@ def parse_logbook_csv(filename: str) -> list[specs.Logged_Jump]:
     '''
     
     logbook: list = []
+    
+    try:
+        with open(filename, 'r') as csv_file:
 
-    with open(filename, 'r') as csv_file:
-
-        csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_reader = csv.reader(csv_file, delimiter=',')
         
-        for row in csv_reader:
-            temp = specs.Logged_Jump()
-            temp.jump_number = row[0]
-            temp.date = row[1]
-            temp.exit_altitude = row[2]
-            temp.location = row[3]
-            temp.aircraft = row[4]
-            temp.equipment = row[5]
-            temp.signature = row[6]
-            temp.description = row[7]
-            logbook.append(temp)
+            for row in csv_reader:
+                temp = specs.Logged_Jump()
+                temp.jump_number = row[0]
+                temp.date = row[1]
+                temp.exit_altitude = row[2]
+                temp.location = row[3]
+                temp.aircraft = row[4]
+                temp.equipment = row[5]
+                temp.signature = row[6]
+                temp.description = row[7]
+                logbook.append(temp)
+
+    except FileNotFoundError:
+        save_logbook(logbook, filename)        
 
 
     if len(logbook) != 0:
@@ -79,16 +84,6 @@ def save_logbook(logbook: list[specs.Logged_Jump], outfile: str) -> None:
                     f'{jump.aircraft},{jump.equipment},{jump.signature},{jump.description}', file=f_)
 
     return None
-
-
-def space(offset: int) -> str:
-    '''
-    Creates a string of 'offset' number of spaces.
-
-    :param offset int: The number of spaces to be in the string
-    :rtype str: 'offset' number of spaces
-    '''
-    return ' ' * offset
 
 
 def parse_logbook_to_list(logbook: list[specs.Logged_Jump]) -> list[str]:

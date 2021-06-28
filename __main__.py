@@ -1,5 +1,4 @@
 import PySimpleGUI as sg
-import sys
 from logbook_package import gen_win, gk, specs, parser
 
 

@@ -130,24 +130,28 @@ def generate_view_log_book_window(
     :param logbook list[specs.Logged_Jump]: The jump information of the jumper.
     :rtype sg.Window: The GUI to be viewed by the user.
     '''
-    
-    data = []
-    header_list = []
 
-    with open(gk._fLOGBOOK_CSV, 'r') as infile:
-        reader = csv.reader(infile)
-        header_list = next(reader)
-        data = list(reader)
+    header_list = ['Jump No.','Date','Exit Altitude','Location','Aircraft','Equipment','Signature','Description']
+    data = [[j.jump_number, j.date, j.exit_altitude, j.location, j.aircraft, j.equipment, j.signature, j.description] for j in logbook]
+    text = [[sg.Text(f'# Jumps:   {logbook[-1].jump_number}'),
+            sg.Text(f'Equipment: {default_skydiver_info.parachute_brand} {default_skydiver_info.parachute_model} {default_skydiver_info.parachute_size}')]]
 
-    layout = [[ sg.Table(values=data,
+    title = [sg.Frame(f"{default_skydiver_info.name}'s Logbook", layout=text)]
+
+    layout = [
+
+            [title],
+
+            [ sg.Table(values=data,
         headings=header_list,
         max_col_width=25,
         auto_size_columns=True,
         justification='left',
-        alternating_row_color='black')
-        ]]
+        alternating_row_color='black')]
 
-    return sg.Window('View Logbook', layout, finalize=True)
+            ]
+
+    return sg.Window('View Logbook', layout, finalize=True, font=('Helvetica', 12))
 
 
 # CONTROLLERS
