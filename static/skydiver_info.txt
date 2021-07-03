@@ -1,4 +1,5 @@
 Name:						Kyle Hurd
+License Number:				C-48149
 Parachute Brand:			Precision
 Parachute Model:			Fusion
 Parachute Size [sq. ft.]: 	135

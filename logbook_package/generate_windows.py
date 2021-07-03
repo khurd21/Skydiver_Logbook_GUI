@@ -7,34 +7,38 @@ import logbook_package.skydiver_info as specs
 import logbook_package.parser as parser
 
 
-def generate_primary_window() -> sg.Window:
+def generate_primary_window(specs: specs.Skydiver_Personal_Info, logbook: list[specs.Logged_Jump]) -> sg.Window:
     '''
     Generates the main menu window to navigate pages.
 
     :rtype sg.Window(): GUI Window for main page
     '''
 
-    btn_pad = (0,15)
-
-    column_1 = [
-            [sg.Text('Hello, <INSERT_NAME>', justification='l', font=('Helvetica', 35), key=gk._kGET_NAME_INPUT, pad=(0,50))],
-            [sg.Image('./static/images/skydiver.png')]
-            ]
-
-    column_2 = [
-            [sg.Button(gk._bLAUNCH_LOG_JUMP_WINDOW, pad=btn_pad)],
-            [sg.Button(gk._bVIEW_LOGBOOK, pad=btn_pad)],
-            [sg.Button(gk._bQUIT, pad=btn_pad)]
+    btn_pad = (40,15)
+    btn_layout = [
+            [ sg.Button(gk._bLAUNCH_LOG_JUMP_WINDOW, pad=btn_pad),
+                sg.Button(gk._bVIEW_LOGBOOK, pad=btn_pad),
+                sg.Button(gk._bQUIT, pad=btn_pad)]
             ]
 
 
-    layout = [[
-                    sg.Column(column_1, justification='c', element_justification='center'),
-                    sg.Column(column_2, justification='c', element_justification='center')
+    specs_text = [
+            [ sg.Text(f'Name:             {specs.name}') ],
+            [ sg.Text(f'License #:        {specs.license_number}') ],
+            [ sg.Text(f'# Jumps:          {logbook[-1].jump_number}')],
+            [ sg.Text(f'Current DZ:       {specs.current_dropzone}') ],
+            [ sg.Text(f'Equipment:        {specs.parachute_brand} {specs.parachute_model} {specs.parachute_size}')],
+            [ sg.Text(f'Primary Aircraft: {specs.primary_aircraft}') ]
+            ]
 
-                    ]]
 
-    return sg.Window('Main Menu', layout, finalize=True)
+    layout = [
+            [ sg.Frame(f"{specs.name}'s Logbook", layout=specs_text), sg.Image('./static/images/skydiver.png') ],
+            # [ sg.Image('./static/images/skydiver.png') ],
+            [ sg.Column(btn_layout, justification='r', element_justification='right') ]
+            ]
+
+    return sg.Window('Main Menu', layout, finalize=True, font=('Helvetica', 12))
 
 
 def generate_log_a_jump_window(skydiver_default_info: list[str]) -> sg.Window:
@@ -48,34 +52,35 @@ def generate_log_a_jump_window(skydiver_default_info: list[str]) -> sg.Window:
     '''
 
     today: str = date.today().strftime('%m/%d/%Y')
+    size_v = (20,1)
     
-    log_button_to_be_centered = [[sg.Button(gk._bLOG_JUMP), sg.Button(gk._bEXIT)]]
+    log_button_to_be_centered = [[sg.Button(gk._bLOG_JUMP), sg.Button(gk._bBACK)]]
     layout = [
-                [sg.Text('Jump #: N/A', key=gk._kUPDATE_JUMP_NUMBER, size=(20,1), pad=(0,20))],
+                [sg.Text('Jump #: N/A', key=gk._kUPDATE_JUMP_NUMBER, size=size_v, pad=(0,20))],
 
-                [sg.Text('Date:', size=(20,1)), sg.Input(default_text=today,
+                [sg.Text('Date:', size=size_v), sg.Input(default_text=today,
                     key=gk._kGET_DATE_OF_JUMP_INPUT)],
 
-                [sg.Text('Exit Altitude:', size=(20,1)), sg.Input(default_text='13000',
+                [sg.Text('Exit Altitude:', size=size_v), sg.Input(default_text='13000',
                    key=gk._kGET_EXIT_ALTITUDE_INPUT)],
 
-                [sg.Text('Location:', size=(20,1)), sg.Input(default_text=skydiver_default_info[0],
+                [sg.Text('Location:', size=size_v), sg.Input(default_text=skydiver_default_info[0],
                    key=gk._kGET_DROP_ZONE_LOCATION_INPUT)],
 
-                [sg.Text('Aircraft:', size=(20,1)), sg.Input(default_text=skydiver_default_info[1],
+                [sg.Text('Aircraft:', size=size_v), sg.Input(default_text=skydiver_default_info[1],
                    key=gk._kGET_AIRCRAFT_INPUT)],
 
-                [sg.Text('Equipment:', size=(20,1)), sg.Input(default_text=skydiver_default_info[2],
+                [sg.Text('Equipment:', size=size_v), sg.Input(default_text=skydiver_default_info[2],
                    key=gk._kGET_PARACHUTE_MODEL_SIZE_INPUT)],
 
-                [sg.Text('Signature:', size=(20,1)), sg.Input(key=gk._kGET_SIGNATURE_INPUT)],
+                [sg.Text('Signature:', size=size_v), sg.Input(key=gk._kGET_SIGNATURE_INPUT)],
                 
-                [sg.Text('Description:', size=(20,1)), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)],
+                [sg.Text('Description:', size=size_v), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)],
 
                 [sg.Column(log_button_to_be_centered, justification='c', element_justification='center')]
             ]
 
-    return sg.Window('Log A Jump', layout, finalize=True)
+    return sg.Window('Log A Jump', layout, finalize=True, font=('Helvetica', 12))
 
 
 def generate_create_new_logbook_window(skydiver_default_info: list[str]) -> sg.Window:
@@ -87,36 +92,37 @@ def generate_create_new_logbook_window(skydiver_default_info: list[str]) -> sg.W
     '''
      
     today: str = date.today().strftime('%m/%d/%Y')
+    size_v = (20,1)
     
     log_button_to_be_centered = [[sg.Button(gk._bLOG_JUMP), sg.Button(gk._bEXIT)]]
     layout = [
                 [sg.Text("It appears you do not have a log book set up. Let's get that set up!", key='-UPDATE_TEXT-')],
 
-                [sg.Text('Jump #:', size=(20,1)), sg.Input(key=gk._kGET_JUMP_NUMBER)],
+                [sg.Text('Jump #:', size=size_v), sg.Input(key=gk._kGET_JUMP_NUMBER)],
 
-                [sg.Text('Date:', size=(20,1)), sg.Input(default_text=today,
+                [sg.Text('Date:', size=size_v), sg.Input(default_text=today,
                     key=gk._kGET_DATE_OF_JUMP_INPUT)],
 
-                [sg.Text('Exit Altitude:', size=(20,1)), sg.Input(default_text='13000',
+                [sg.Text('Exit Altitude:', size=size_v), sg.Input(default_text='13000',
                    key=gk._kGET_EXIT_ALTITUDE_INPUT)],
 
-                [sg.Text('Location:', size=(20,1)), sg.Input(default_text=skydiver_default_info[0],
+                [sg.Text('Location:', size=size_v), sg.Input(default_text=skydiver_default_info[0],
                    key=gk._kGET_DROP_ZONE_LOCATION_INPUT)],
 
-                [sg.Text('Aircraft:', size=(20,1)), sg.Input(default_text=skydiver_default_info[1],
+                [sg.Text('Aircraft:', size=size_v), sg.Input(default_text=skydiver_default_info[1],
                    key=gk._kGET_AIRCRAFT_INPUT)],
 
-                [sg.Text('Equipment:', size=(20,1)), sg.Input(default_text=skydiver_default_info[2],
+                [sg.Text('Equipment:', size=size_v), sg.Input(default_text=skydiver_default_info[2],
                    key=gk._kGET_PARACHUTE_MODEL_SIZE_INPUT)],
 
-                [sg.Text('Signature:', size=(20,1)), sg.Input(key=gk._kGET_SIGNATURE_INPUT)],
+                [sg.Text('Signature:', size=size_v), sg.Input(key=gk._kGET_SIGNATURE_INPUT)],
                 
-                [sg.Text('Description:', size=(20,1)), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)],
+                [sg.Text('Description:', size=size_v), sg.Multiline(key=gk._kGET_DESCRIPTION_OF_JUMP)],
 
                 [sg.Column(log_button_to_be_centered, justification='c', element_justification='center')]
             ]
     
-    return sg.Window('First Log', layout, finalize=True)
+    return sg.Window('First Log', layout, finalize=True, font=('Helvetica', 12))
 
 
 def generate_view_log_book_window(
@@ -137,17 +143,26 @@ def generate_view_log_book_window(
             sg.Text(f'Equipment: {default_skydiver_info.parachute_brand} {default_skydiver_info.parachute_model} {default_skydiver_info.parachute_size}')]]
 
     title = [sg.Frame(f"{default_skydiver_info.name}'s Logbook", layout=text)]
+    edit_btn = [[sg.Button(button_text=gk._bGET_TABLE), sg.Button(button_text=gk._bBACK)]]
 
     layout = [
 
             [title],
 
-            [ sg.Table(values=data,
-        headings=header_list,
-        max_col_width=25,
-        auto_size_columns=True,
-        justification='left',
-        alternating_row_color='black')]
+            [
+                sg.Table(
+                    values=data,
+                    headings=header_list,
+                    max_col_width=25,
+                    auto_size_columns=True,
+                    justification='left',
+                    alternating_row_color='black',
+                    key=gk._kGET_TABLE,
+                    select_mode=sg.TABLE_SELECT_MODE_BROWSE
+                    )
+                ],
+
+            [sg.Column(edit_btn, justification='c', element_justification='ceneter')]
 
             ]
 
@@ -207,26 +222,19 @@ def create_home_page(
         logbook: list[specs.Logged_Jump]
         ) -> None:
     
-    main_menu_window, log_a_jump_window, view_log_book_window = generate_primary_window(), None, None
-    main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info.name}')
-
+    main_menu_window, log_a_jump_window, view_log_book_window = generate_primary_window(default_skydiver_info, logbook), None, None
 
     while True:
 
         window, event, values = sg.read_all_windows()
-         
-        if event == sg.WINDOW_CLOSED or event == gk._bQUIT or event == gk._bEXIT:
+        
+        if event in (sg.WINDOW_CLOSED, gk._bQUIT, gk._bEXIT, gk._bBACK):
 
             if window != None:
                 window.close()
 
-            if window == log_a_jump_window:
-                main_menu_window = generate_primary_window()
-                main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info.name}')
-
-            elif window == view_log_book_window:
-                main_menu_window = generate_primary_window()
-                main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info.name}')
+            if window in (log_a_jump_window, view_log_book_window):
+                main_menu_window = generate_primary_window(default_skydiver_info, logbook)
 
             elif window == main_menu_window:
                 break
@@ -241,6 +249,11 @@ def create_home_page(
                 ]
             log_a_jump_window = generate_log_a_jump_window(arr)
             log_a_jump_window[gk._kUPDATE_JUMP_NUMBER].update(f'Jump #: {int(logbook[-1].jump_number) + 1}')
+       
+        # A SUBSET OF THE VIEW LOGBOOK WINDOW
+        elif event == gk._bGET_TABLE:
+            logged_jump = values[gk._kGET_TABLE]
+            # FIGURE OUT A NICE WAY TO EDIT EXISTING JUMPS. MAYBE TRY TO UPDATE THE PAGE? OR JUST GENERATE NEW ONE
 
         elif event == gk._bVIEW_LOGBOOK:
 
@@ -260,8 +273,7 @@ def create_home_page(
                 parser.save_logbook(logbook, gk._fLOGBOOK_CSV)
 
                 log_a_jump_window.close()
-                main_menu_window = generate_primary_window()
-                main_menu_window[gk._kGET_NAME_INPUT].update(f'Hello, {default_skydiver_info.name}')
+                main_menu_window = generate_primary_window(default_skydiver_info, logbook)
 
             else:
                 log_a_jump_window[gk._kUPDATE_JUMP_NUMBER].update('Please enter in all fields', background_color='red')

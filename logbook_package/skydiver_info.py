@@ -12,6 +12,7 @@ class Skydiver_Personal_Info:
         self.parachute_size: str = ''
         self.current_dropzone: str = ''
         self.primary_aircraft: str = ''
+        self.license_number: str = ''
         return
 
 

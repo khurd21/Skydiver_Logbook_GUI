@@ -28,6 +28,7 @@ def parse_skydiver_info_file(filename: str) -> specs.Skydiver_Personal_Info:
     info.parachute_size = skydiver_info[gk._dPARACHUTE_SIZE]
     info.current_dropzone = skydiver_info[gk._dCURRENT_DROPZONE]
     info.primary_aircraft = skydiver_info[gk._dPRIMARY_AIRCRAFT]
+    info.license_number = skydiver_info[gk._dLICENSE_NUMBER]
 
     return info
 

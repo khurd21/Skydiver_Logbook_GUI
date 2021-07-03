@@ -5,19 +5,21 @@ _kGET_DROP_ZONE_LOCATION_INPUT = '-DZ_LOCATION-'
 _kGET_AIRCRAFT_INPUT = '-TYPE_OF_AIRCRAFT-'
 _kGET_PARACHUTE_MODEL_SIZE_INPUT = '-EQUIPMENT-'
 _kGET_DATE_OF_JUMP_INPUT = '-DATE-'
-_kGET_NAME_INPUT = '-NAME-'
 _kGET_JUMP_NUMBER = '-JUMP_NO-'
 _kUPDATE_JUMP_NUMBER = '-UPDATE_JUMP_NO-'
 _kGET_SIGNATURE_INPUT = '-SIGNATURE-'
 _kGET_DESCRIPTION_OF_JUMP = '-JUMP_DESCRIPTION-'
 _kUPDATE_VIEW_LOG_BOOK_LIST = '-LOG_BOOK_LIST-'
+_kGET_TABLE = '-TABLE-'
 
 # _b = Buttons
 
 _bLAUNCH_LOG_JUMP_WINDOW = 'Log A Jump'
+_bGET_TABLE = 'Edit Selected Jump'
 _bLOG_JUMP = 'Log'
 _bVIEW_LOGBOOK = 'View LogBook'
 _bQUIT = 'Quit'
+_bBACK = 'Back'
 _bEXIT = 'Exit'
 
 # _f = Files
@@ -33,6 +35,7 @@ _dPARACHUTE_MODEL = 'Parachute Model'
 _dPARACHUTE_SIZE = 'Parachute Size [sq. ft.]'
 _dCURRENT_DROPZONE = 'Current Dropzone'
 _dPRIMARY_AIRCRAFT = 'Primary Aircraft'
+_dLICENSE_NUMBER = 'License Number'
 
 # _l = Logged Jump Dictionary Keys
 
