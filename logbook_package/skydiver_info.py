@@ -33,6 +33,13 @@ class Logged_Jump:
         return
 
 
+    def __lt__(self, rhs) -> bool:
+        date_format: str = '%m/%d/%Y'
+        dt_rhs = dt.datetime.strptime(rhs.date, date_format)
+        dt_lhs = dt.datetime.strptime(self.date, date_format)
+        return dt_lhs < dt_rhs
+
+
     def _verify_date(self) -> bool:
         '''
         Checks if the date provided is in the mm/dd/yyyy format.

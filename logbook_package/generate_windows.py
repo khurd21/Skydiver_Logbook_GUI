@@ -23,12 +23,12 @@ def generate_primary_window(specs: specs.Skydiver_Personal_Info, logbook: list[s
 
 
     specs_text = [
-            [ sg.Text(f'Name:             {specs.name}') ],
-            [ sg.Text(f'License #:        {specs.license_number}') ],
-            [ sg.Text(f'# Jumps:          {logbook[-1].jump_number}')],
-            [ sg.Text(f'Current DZ:       {specs.current_dropzone}') ],
-            [ sg.Text(f'Equipment:        {specs.parachute_brand} {specs.parachute_model} {specs.parachute_size}')],
-            [ sg.Text(f'Primary Aircraft: {specs.primary_aircraft}') ]
+            [ sg.Text(f'Name:               {specs.name.strip()}') ],
+            [ sg.Text(f'License #:          {specs.license_number.strip()}') ],
+            [ sg.Text(f'# Jumps:            {logbook[-1].jump_number.strip()}')],
+            [ sg.Text(f'Current DZ:       {specs.current_dropzone.strip()}') ],
+            [ sg.Text(f'Equipment:        {specs.parachute_brand.strip()} {specs.parachute_model.strip()} {specs.parachute_size.strip()}')],
+            [ sg.Text(f'Primary Aircraft: {specs.primary_aircraft.strip()}') ]
             ]
 
 
@@ -141,11 +141,13 @@ def generate_view_log_book_window(
     data = [[j.jump_number, j.date, j.exit_altitude, j.location, j.aircraft, j.equipment, j.signature, j.description] for j in logbook]
     text = [[sg.Text(f'# Jumps:   {logbook[-1].jump_number}'),
             sg.Text(f'Equipment: {default_skydiver_info.parachute_brand} {default_skydiver_info.parachute_model} {default_skydiver_info.parachute_size}')]]
-
+    
     title = [sg.Frame(f"{default_skydiver_info.name}'s Logbook", layout=text)]
     edit_btn = [[sg.Button(button_text=gk._bGET_TABLE), sg.Button(button_text=gk._bBACK)]]
 
     layout = [
+
+            [ sg.Text('', key='-EDIT_VIEW_LOG_EXCEPTION-')],
 
             [title],
 
@@ -157,16 +159,77 @@ def generate_view_log_book_window(
                     auto_size_columns=True,
                     justification='left',
                     alternating_row_color='black',
-                    key=gk._kGET_TABLE,
                     select_mode=sg.TABLE_SELECT_MODE_BROWSE
                     )
                 ],
+            [ sg.Text('Enter Jump # to Edit: '), sg.Input(key='-EDIT_JUMP-') ],
 
-            [sg.Column(edit_btn, justification='c', element_justification='ceneter')]
+            [ sg.Column(edit_btn, justification='c', element_justification='ceneter') ]
 
             ]
 
     return sg.Window('View Logbook', layout, finalize=True, font=('Helvetica', 12))
+
+
+def generate_edit_jump_window(jump: specs.Logged_Jump) -> specs.Logged_Jump:
+    
+    size_v = (20,1)
+    log_button_to_be_centered = [[sg.Button('Make Changes'), sg.Button(gk._bBACK)]]
+
+    layout = [
+                [sg.Text('', key='-UPDATE_TEXT-')],
+
+                [sg.Text(f'Jump #: {jump.jump_number}', size=size_v, pad=(0,20))],
+
+                [sg.Text('Date:', size=size_v), sg.Input(default_text=jump.date,
+                    key=gk._kGET_DATE_OF_JUMP_INPUT)],
+
+                [sg.Text('Exit Altitude:', size=size_v), sg.Input(default_text=jump.exit_altitude,
+                   key=gk._kGET_EXIT_ALTITUDE_INPUT)],
+
+                [sg.Text('Location:', size=size_v), sg.Input(default_text=jump.location,
+                   key=gk._kGET_DROP_ZONE_LOCATION_INPUT)],
+
+                [sg.Text('Aircraft:', size=size_v), sg.Input(default_text=jump.aircraft,
+                   key=gk._kGET_AIRCRAFT_INPUT)],
+
+                [sg.Text('Equipment:', size=size_v), sg.Input(default_text=jump.equipment,
+                   key=gk._kGET_PARACHUTE_MODEL_SIZE_INPUT)],
+
+                [sg.Text('Signature:', size=size_v), sg.Input(default_text=jump.signature,
+                    key=gk._kGET_SIGNATURE_INPUT)],
+                
+                [sg.Text('Description:', size=size_v), sg.Multiline(default_text=jump.description,
+                    key=gk._kGET_DESCRIPTION_OF_JUMP)],
+
+                [sg.Column(log_button_to_be_centered, justification='c', element_justification='center')]
+            ]
+
+    window = sg.Window('Edit An Existing Jump', layout, finalize=True, font=('Helvetica', 12))
+    changes = specs.Logged_Jump()
+
+    while True:
+
+        event, values = window.read()
+
+        if event == sg.WINDOW_CLOSED:
+            exit(0)
+
+        elif event == gk._bBACK:
+            break
+
+        elif event == 'Make Changes':
+
+            values[gk._kGET_JUMP_NUMBER] = jump.jump_number
+            changes.fill_logged_jump_from_dict(values)
+
+            if changes.verify_logged_jump() == True:
+                break
+            else:
+                window.Element('-UPDATE_TEXT-').update('Please enter valid fields.', background_color='red')
+
+    window.close()
+    return changes if changes.verify_logged_jump() else jump
 
 
 # CONTROLLERS
@@ -227,8 +290,12 @@ def create_home_page(
     while True:
 
         window, event, values = sg.read_all_windows()
-        
-        if event in (sg.WINDOW_CLOSED, gk._bQUIT, gk._bEXIT, gk._bBACK):
+       
+        if event == sg.WINDOW_CLOSED:
+            window.close()
+            break
+
+        elif event in (gk._bQUIT, gk._bEXIT, gk._bBACK):
 
             if window != None:
                 window.close()
@@ -249,11 +316,24 @@ def create_home_page(
                 ]
             log_a_jump_window = generate_log_a_jump_window(arr)
             log_a_jump_window[gk._kUPDATE_JUMP_NUMBER].update(f'Jump #: {int(logbook[-1].jump_number) + 1}')
-       
+      
+
         # A SUBSET OF THE VIEW LOGBOOK WINDOW
         elif event == gk._bGET_TABLE:
-            logged_jump = values[gk._kGET_TABLE]
-            # FIGURE OUT A NICE WAY TO EDIT EXISTING JUMPS. MAYBE TRY TO UPDATE THE PAGE? OR JUST GENERATE NEW ONE
+            
+            try:
+                jump_no = int(values['-EDIT_JUMP-'].strip()) - int(logbook[0].jump_number)
+                logged_jump = logbook[jump_no]
+                main_menu_window.close()
+                view_log_book_window.close()
+
+                logbook[jump_no] = generate_edit_jump_window(logged_jump)
+
+                view_log_book_window = generate_view_log_book_window(default_skydiver_info, logbook)
+
+            except (ValueError, IndexError):
+                view_log_book_window['-EDIT_VIEW_LOG_EXCEPTION-'].update('Please enter a valid integer', background_color='red')
+
 
         elif event == gk._bVIEW_LOGBOOK:
 
